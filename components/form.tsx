@@ -5,7 +5,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { loginSchema } from '@/lib/validations';
-import { signIn } from "@/firebase/auth";
+import { useSignIn } from "@/firebase/auth";
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input"
 export const LoginForm = () => {
 
   const { push } = useRouter();
+  const { result, error, signIn } = useSignIn();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -32,8 +33,9 @@ export const LoginForm = () => {
 
 
   const handleSubmit = async (values: z.infer<typeof loginSchema>) => {    
-    const { email, password } = values;
-    const { result, error } = await signIn(email, password);
+    const { email, password } = values;    
+
+    await signIn(email, password)
 
     if (error) {
       return console.log(error)
@@ -42,7 +44,7 @@ export const LoginForm = () => {
     // else successful
     console.log(result)
     return push("/dashboard")
-}
+  }
   
   return(
     <Form {...form}>
