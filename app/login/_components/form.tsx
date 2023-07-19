@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import Image from 'next/image';
 
 export const LoginForm = () => {
 
@@ -48,7 +49,7 @@ export const LoginForm = () => {
   
   return(
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="email"
@@ -78,5 +79,24 @@ export const LoginForm = () => {
         <Button type="submit">Login</Button>
       </form>
     </Form>
+  )
+}
+
+export const LoginWithGoogle = () => {
+  const { signInWithGoogle } = useSignIn();
+
+  const handleGoogleLogin = async () => {
+    await signInWithGoogle()
+  }
+
+  return(    
+    <Button 
+    type="button" 
+    onClick={() => handleGoogleLogin()}
+    className="w-full"
+    >
+      <Image src="/google.svg" alt="Google Logo" width={20} height={20} />
+      <span className="ml-2">Login with Google</span>
+    </Button>
   )
 }

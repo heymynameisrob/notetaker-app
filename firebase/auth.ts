@@ -7,6 +7,9 @@ import {
   UserCredential,
   AuthError,
   signOut,
+  signInWithRedirect,
+  GoogleAuthProvider,
+  signInWithPopup,
 
 } from "firebase/auth";
 
@@ -24,6 +27,7 @@ type SignInProps<T> = {
   result: T | null;
   error: AuthError | null;
   signIn: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
 };
 
 type AuthSignOutReturn<T> = {
@@ -70,7 +74,21 @@ const useSignIn = (): SignInProps<UserCredential> => {
     setLoading(false);
   };
 
-  return { loading, result, error, signIn };
+  const signInWithGoogle = async () => {
+    setLoading(true);
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const userCredential = await signInWithPopup(auth, provider);
+      setResult(userCredential);
+    } catch (err) {
+      setError(err as AuthError);
+      console.log(err);
+    }
+    setLoading(false);
+  };
+
+  return { loading, result, error, signIn, signInWithGoogle };
 };
 
 const useSignOut = (): AuthSignOutReturn<void> => {
@@ -91,4 +109,7 @@ const useSignOut = (): AuthSignOutReturn<void> => {
 
   return { loading, error, result, signOutUser };
 };
+
+
+
 export { useSignUp, useSignIn, useSignOut };
